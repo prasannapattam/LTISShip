@@ -26,6 +26,12 @@ namespace LTISShip
             DBUtil.Execute(ConnectionStrings.LTIS, cmdText);
         }
 
+        public void AuditRun(int orderCount)
+        {
+            string cmdText = "insert into ShipWorksRun(OrderCount) values(" + orderCount.ToString() + ")";
+            DBUtil.Execute(ConnectionStrings.LTIS, cmdText);
+        }
+
         public DataTable GetOrders(long orderNumber)
         {
             string cmdText = @"select o.OrderID, o.OrderNumber, o.BillFirstName, o.BillLastName, o.BillCompany, o.BillEmail,
@@ -45,7 +51,7 @@ namespace LTISShip
             long orderNumber = GetLastOrderNumber();
 
             DataTable orders = GetOrders(orderNumber);
-
+            AuditRun(orders.Rows.Count);
             if(orders.Rows.Count == 0)
                 return;
 
